@@ -3,9 +3,14 @@
 #Choose if timeseries or domain
 request_type = "timeseries" #"domain","timeseries"
 
+
+#Account information
+# You may use the community account for first tests.
+# Since it is very limited and shared among testers, please set your personal account for extended tests or operational use.
+username = "powerbi-community"
+password = "Alepafume675"
+
 #Data
-username = "powerbi-community" #TO-DO
-password = "Ulutidedi775" #TO-DO
 time_zone = "Europe/Berlin"
 startdate = ISOdatetime(year = 2017, month = 01, day = 01, hour = 00, min = 00, sec = 00, tz="UTC")
 enddate = ISOdatetime(year = 2017, month = 02, day = 01, hour = 00, min = 00, sec = 00, tz="UTC")
