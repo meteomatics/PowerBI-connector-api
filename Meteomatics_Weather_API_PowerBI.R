@@ -1,19 +1,26 @@
 #Meteomatics Weather API Connector
 
+#Set working directory
+setwd("") #edit your own path
+#Connecting with the query_api_time.R
+source('query_api_PowerBI.R')
+
 #Choose if timeseries or domain
 request_type = "timeseries" #"domain","timeseries"
 
-
-#Account information
-# You may use the community account for first tests.
-# Since it is very limited and shared among testers, please set your personal account for extended tests or operational use.
+#Data
 username = "powerbi-community"
 password = "Alepafume675"
 
-#Data
 time_zone = "Europe/Berlin"
-startdate = ISOdatetime(year = 2017, month = 01, day = 01, hour = 00, min = 00, sec = 00, tz="UTC")
-enddate = ISOdatetime(year = 2017, month = 02, day = 01, hour = 00, min = 00, sec = 00, tz="UTC")
+startdate = ISOdatetime(year = strtoi(strftime(today(),'%Y')),
+                        month = strtoi(strftime(today(),'%m'), 10),
+                        day = strtoi(strftime(today(),'%d'), 10),
+                        hour = 00, min = 00, sec = 00, tz = "UTC")
+enddate = ISOdatetime(year = strtoi(strftime(today(),'%Y')),
+                      month = strtoi(strftime(today(),'%m'), 10),
+                      day = strtoi(strftime(today(),'%d'), 10)+1,
+                      hour = 00, min = 00, sec = 00, tz = "UTC")
 interval = "PT1H"
 
 if (request_type == "timeseries"){
@@ -24,9 +31,6 @@ if (request_type == "timeseries"){
   parameters = "t_2m:C" #only one parameter
   coordinate = "47.9,5.7_45.8,10.7:0.1,0.1" #Rectangle
 }
-
-#Connecting with the query_api_time.R
-source('/query_api_PowerBI.R') #TO-DO : Absolute Path to the "query_api_PowerBI" script
 
 #Data from the API
 output = query_api(username, password, startdate, enddate, interval, parameters, coordinate)
