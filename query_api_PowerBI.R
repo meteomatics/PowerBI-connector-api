@@ -49,7 +49,7 @@ query_api = function(username, password, startdate, enddate,
   #URL
   if(request_type == "timeseries")
   {
-    query = sprintf("https://%s:%s@api.meteomatics.com/%s--%s:%s/%s/%s/csv?model=%s&connector=PowerBI_connector_v%s", 
+    query = sprintf("https://%s:%s@api.meteomatics.com/%s--%s:%s/%s/%s/csv?model=%s&connector=PowerBI_connector_%s", 
                     username, password, startdate_query, enddate_query, interval, parameters, coordinate, model, VERSION
     )
   
