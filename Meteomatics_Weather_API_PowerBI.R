@@ -33,4 +33,4 @@ if (request_type == "timeseries"){
 }
 
 #Data from the API
-output = query_api(username, password, startdate, enddate, interval, parameters, coordinate)
+output = query_api(username, password, startdate, enddate, interval, parameters, coordinate, time_zone = time_zone)
