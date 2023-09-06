@@ -4,7 +4,8 @@ library(httr)
 library(data.table)
 library(lubridate)
 library(ggplot2)
-source('VERSION.R')
+
+VERSION = "2.0.1"
 
 query_user_features = function(username, password)
 {
@@ -27,7 +28,7 @@ api_timeseries = function(query)
     list(content = parsed1)
   )
 }
-  
+
 api_domain = function(query)
 {
   resp1 = fread(query, skip=2, fill = TRUE)
@@ -36,8 +37,8 @@ api_domain = function(query)
   )
 }
 
-query_api = function(username, password, startdate, enddate, 
-                     interval, parameters, coordinate, 
+query_api = function(username, password, startdate, enddate,
+                     interval, parameters, coordinate,
                      request_type="timeseries",
                      model="mix", time_zone="UTC"
 )
@@ -49,10 +50,10 @@ query_api = function(username, password, startdate, enddate,
   #URL
   if(request_type == "timeseries")
   {
-    query = sprintf("https://%s:%s@api.meteomatics.com/%s--%s:%s/%s/%s/csv?model=%s&connector=PowerBI_connector_v%s", 
+    query = sprintf("https://%s:%s@api.meteomatics.com/%s--%s:%s/%s/%s/csv?model=%s&connector=PowerBI_connector_v%s",
                     username, password, startdate_query, enddate_query, interval, parameters, coordinate, model, VERSION
     )
-  
+
     result = api_timeseries(query)
     #Data in new Dataframe
     df = as.data.frame(result$content)
@@ -82,9 +83,9 @@ query_api = function(username, password, startdate, enddate,
     query = sprintf("https://%s:%s@api.meteomatics.com/%s/%s/%s/csv?model=%s&connector=PowerBI_connector_v%s",
                     username, password, startdate_query, parameters, coordinate, model, VERSION
     )
-    
+
     result = api_domain(query)
-    
+
     #New Dataframe
     df = as.data.frame(result$content)
     #Numbers of columns and rows
@@ -101,7 +102,37 @@ query_api = function(username, password, startdate, enddate,
     mm = matrix(unlist(df_domain["Values"]), ncol = c -1 , byrow = TRUE)
     image(z=t(mm[nrow(mm):1,]))
     return(df_domain)
-    
-    } 
-  
+
+    }
 }
+
+
+#Choose if timeseries or domain
+request_type = "timeseries" #"domain","timeseries"
+
+#Data
+username = "powerbi-community"
+password = "Alepafume675"
+
+time_zone = "Europe/Berlin"
+startdate = ISOdatetime(year = strtoi(strftime(today(),'%Y')),
+                        month = strtoi(strftime(today(),'%m'), 10),
+                        day = strtoi(strftime(today(),'%d'), 10),
+                        hour = 00, min = 00, sec = 00, tz = "UTC")
+enddate = ISOdatetime(year = strtoi(strftime(today(),'%Y')),
+                      month = strtoi(strftime(today(),'%m'), 10),
+                      day = strtoi(strftime(today(),'%d'), 10)+1,
+                      hour = 00, min = 00, sec = 00, tz = "UTC")
+interval = "PT1H"
+
+if (request_type == "timeseries"){
+  parameters = "t_2m:C,relative_humidity_1000hPa:p" #different parameters
+  coordinate = "47.11,11.47" #Point and line
+} else {
+  #startdate is used
+  parameters = "t_2m:C" #only one parameter
+  coordinate = "47.9,5.7_45.8,10.7:0.1,0.1" #Rectangle
+}
+
+#Data from the API
+output = query_api(username, password, startdate, enddate, interval, parameters, coordinate, time_zone = time_zone)
